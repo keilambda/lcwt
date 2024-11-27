@@ -53,7 +53,7 @@ Closed M = FV M ≡ []
 ƛ-cong-body : M ≡ N → ƛ x ⇒ M ≡ ƛ x ⇒ N
 ƛ-cong-body = ƛ-cong refl
 
-·-cong : M ≡ N → P ≡ Q → M · P ≡  N · Q
+·-cong : M ≡ N → P ≡ Q → M · P ≡ N · Q
 ·-cong = cong₂ _·_
 
 ·-cong-left : M ≡ N → M · L ≡ N · L
@@ -95,7 +95,7 @@ infix 9 _[_:=_]
 
 -- β-rule
 β⟶_ : Λ → Λ
-β⟶ ((ƛ x ⇒ M) · N) = M [ x :=  N ]
+β⟶ ((ƛ x ⇒ M) · N) = M [ x := N ]
 β⟶ (` x)           = ` x
 β⟶ (ƛ x ⇒ M)       = ƛ x ⇒ β⟶ M
 β⟶ (M · N)         = β⟶ M · β⟶ N
