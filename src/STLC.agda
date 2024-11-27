@@ -1,4 +1,4 @@
-module Untyped where
+module STLC where
 
 open import Data.Bool using (_∨_; _∧_; if_then_else_)
 open import Data.List using (List; []; [_]; _++_; filter)
