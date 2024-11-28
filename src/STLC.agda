@@ -1,15 +1,17 @@
 module STLC where
 
 open import Data.Bool using (Bool; true; false; _∨_; _∧_; if_then_else_)
-open import Data.List using (List; []; [_]; _++_; filter)
+open import Data.List using (List; _∷_; []; [_]; _++_; filter)
 open import Data.String using (String; _≟_; _==_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Level using (zero)
 open import Relation.Nullary using (¬?; ⌊_⌋)
 open import Relation.Binary.Core using (Rel)
+open import Relation.Binary.Definitions using (DecidableEquality)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂)
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _◅_; _▻_)
 
+open import Data.List.Membership.Propositional using (_∈_)
 open import Data.List.Membership.DecPropositional _≟_ using (_∈?_; _∉?_)
 
 -- 1.1.1: The set of untyped λ-terms
@@ -192,3 +194,25 @@ _[_:=_]ᵀ : 𝕋 → 𝔸 → 𝕋 → 𝕋
 (A ⟶ B) [ α := C ]ᵀ = A [ α := C ]ᵀ ⟶ B [ α := C ]ᵀ
 
 infix 9 _[_:=_]ᵀ
+
+-- 1.1.14: Type assignment
+Ctx : Set
+Ctx = List (V × 𝕋)
+
+data _⊢_∶_ : Ctx → Λ → 𝕋 → Set where
+  ⊢`_ : ∀ {Γ x A}
+    → (x , A) ∈ Γ
+    -------------
+    → Γ ⊢ ` x ∶ A
+
+  ⊢_⟶_ : ∀ {Γ A B}
+    → Γ ⊢ M ∶ (A ⟶ B)
+    -----------------
+    → Γ ⊢ N ∶ A
+    ---------------
+    → Γ ⊢ M · N ∶ B
+
+  ⊢ƛ_⇒_ : ∀ {Γ x M A B}
+    → ((x , A) ∷ Γ) ⊢ M ∶ B
+    -----------------------
+    → Γ ⊢ ƛ x ⇒ M ∶ (A ⟶ B)
