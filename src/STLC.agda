@@ -4,8 +4,11 @@ open import Data.Bool using (_∨_; _∧_; if_then_else_)
 open import Data.List using (List; []; [_]; _++_; filter)
 open import Data.String using (String; _≟_; _==_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Level using (zero)
 open import Relation.Nullary using (¬?; ⌊_⌋)
+open import Relation.Binary.Core using (Rel)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂)
+open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _▻_)
 
 open import Data.List.Membership.DecPropositional _≟_ using (_∈?_; _∉?_)
 
@@ -107,7 +110,7 @@ infix 9 _[_:=_]
 η⟶ (ƛ x ⇒ M)       = ƛ x ⇒ η⟶ M
 η⟶ (M · N)         = η⟶ M · η⟶ N
 
-data _⟶β_ : Λ → Λ → Set where
+data _⟶β_ : Rel Λ zero where
   β-ƛ :
     -----------------------------
     (ƛ x ⇒ M) · N ⟶β M [ x := N ]
@@ -128,6 +131,12 @@ data _⟶β_ : Λ → Λ → Set where
     → ƛ x ⇒ M ⟶β ƛ x ⇒ N
 
 infix 4 _⟶β_
+
+_↠β_ : Rel Λ zero
+_↠β_ = Star _⟶β_
+
+⟶β→↠β : M ⟶β N → M ↠β N
+⟶β→↠β = ε ▻_
 
 module Combinators where
   I = ƛ "x" ⇒ ` "x"
