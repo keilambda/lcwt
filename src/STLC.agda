@@ -1,7 +1,8 @@
 module STLC where
 
 open import Data.Bool using (Bool; true; false; _∨_; _∧_; if_then_else_)
-open import Data.List using (List; _∷_; []; [_]; _++_; filter)
+open import Data.List using (List; _∷_; []; [_]; _++_; filter; foldr)
+open import Data.Nat using (ℕ; _⊔_; _+_)
 open import Data.String using (String; _≟_; _==_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Level using (zero)
@@ -250,3 +251,21 @@ module TypeAssignmentExamples where
 
   S-ty : ⊢ S ∶ ((`` "A" ⟶ `` "B" ⟶ `` "C") ⟶ (`` "A" ⟶ `` "B") ⟶ `` "A" ⟶ `` "C")
   S-ty = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ ⊢ ⊢` there (there (here refl)) ⟶ (⊢` here refl) ⟶ (⊢ ⊢` there (here refl) ⟶ (⊢` (here refl))))))
+
+-- 1.1.19
+
+-- 1.1.22: depth, rank, order
+dpt : 𝕋 → ℕ
+dpt (`` α)  = 1
+dpt (A ⟶ B) = (dpt A ⊔ dpt B) + 1
+
+rk : 𝕋 → ℕ
+rk (`` α)  = 0
+rk (A ⟶ B) = (rk A + 1) ⊔ rk B
+
+ord : 𝕋 → ℕ
+ord (`` α)  = 1
+ord (A ⟶ B) = (ord A + 1) ⊔ ord B
+
+Γ-dpt : Ctx → ℕ
+Γ-dpt = foldr (λ (_ , A) → dpt A ⊔_) 0
