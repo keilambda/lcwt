@@ -8,7 +8,7 @@ open import Level using (zero)
 open import Relation.Nullary using (¬?; ⌊_⌋)
 open import Relation.Binary.Core using (Rel)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂)
-open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _▻_)
+open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _◅_; _▻_)
 
 open import Data.List.Membership.DecPropositional _≟_ using (_∈?_; _∉?_)
 
@@ -137,6 +137,16 @@ _↠β_ = Star _⟶β_
 
 ⟶β→↠β : M ⟶β N → M ↠β N
 ⟶β→↠β = ε ▻_
+
+data _≡β_ : Rel Λ zero where
+  ⟶β→≡β : M ⟶β N → M ≡β N
+  ≡β-refl : M ≡β M
+  ≡β-sym : M ≡β N → N ≡β M
+  ≡β-trans : L ≡β M → M ≡β N → L ≡β N
+
+↠β→≡β : M ↠β N → M ≡β N
+↠β→≡β ε         = ≡β-refl
+↠β→≡β (ml ◅ ln) = ≡β-trans (⟶β→≡β ml) (↠β→≡β ln)
 
 module Combinators where
   I = ƛ "x" ⇒ ` "x"
