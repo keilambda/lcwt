@@ -2,6 +2,7 @@ module STLC where
 
 open import Data.Bool using (Bool; true; false; _∨_; _∧_; if_then_else_)
 open import Data.List using (List; _∷_; []; [_]; _++_; filter)
+open import Data.List.Relation.Unary.Any using (here; there)
 open import Data.String using (String; _≟_; _==_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Level using (zero)
@@ -216,3 +217,22 @@ data _⊢_∶_ : Ctx → Λ → 𝕋 → Set where
     → ((x , A) ∷ Γ) ⊢ M ∶ B
     -----------------------
     → Γ ⊢ ƛ x ⇒ M ∶ (A ⟶ B)
+
+module TypeAssignmentExamples where
+  open import Relation.Nullary.Negation.Core using (¬_)
+  open Combinators
+
+  x-ty : [ ("x" , `` "A") ] ⊢ (` "x") ∶ (`` "A")
+  x-ty = ⊢` here refl
+
+  x-nty : ¬ ([] ⊢ (` "x") ∶ (`` "A"))
+  x-nty (⊢` ())
+
+  I-ty : [] ⊢ I ∶ (`` "A" ⟶ `` "A")
+  I-ty = ⊢ƛ (⊢` here refl)
+
+  K-ty : [] ⊢ K ∶ (`` "A" ⟶ `` "B" ⟶ `` "A")
+  K-ty = ⊢ƛ (⊢ƛ (⊢` there (here refl)))
+
+  S-ty : [] ⊢ S ∶ ((`` "A" ⟶ `` "B" ⟶ `` "C") ⟶ (`` "A" ⟶ `` "B") ⟶ `` "A" ⟶ `` "C")
+  S-ty = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ ⊢ ⊢` there (there (here refl)) ⟶ (⊢` here refl) ⟶ (⊢ ⊢` there (here refl) ⟶ (⊢` (here refl))))))
