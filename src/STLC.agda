@@ -199,6 +199,7 @@ infix 9 _[_:=_]ᵀ
 Ctx : Set
 Ctx = List (V × 𝕋)
 
+-- The system λ→ à la Curry
 data _⊢_∶_ : Ctx → Λ → 𝕋 → Set where
   ⊢`_ : ∀ {Γ x A}
     → (x , A) ∈ Γ
@@ -221,6 +222,15 @@ infix  9 ⊢`_
 infixl 7 ⊢_⟶_
 infixr 5 ⊢ƛ_
 
+-- 1.1.15
+dom : Ctx → List V
+dom [] = []
+dom ((d , _) ∷ xs) = d ∷ dom xs
+
+⊢_∶_ : Λ → 𝕋 → Set
+⊢ M ∶ A = [] ⊢ M ∶ A
+
+-- 1.1.16
 module TypeAssignmentExamples where
   open import Relation.Nullary.Negation.Core using (¬_)
   open import Data.List.Relation.Unary.Any using (here; there)
@@ -229,14 +239,14 @@ module TypeAssignmentExamples where
   x-ty : [ ("x" , `` "A") ] ⊢ (` "x") ∶ (`` "A")
   x-ty = ⊢` here refl
 
-  x-nty : ¬ ([] ⊢ (` "x") ∶ (`` "A"))
+  x-nty : ¬ (⊢ (` "x") ∶ (`` "A"))
   x-nty (⊢` ())
 
-  I-ty : [] ⊢ I ∶ (`` "A" ⟶ `` "A")
+  I-ty : ⊢ I ∶ (`` "A" ⟶ `` "A")
   I-ty = ⊢ƛ (⊢` here refl)
 
-  K-ty : [] ⊢ K ∶ (`` "A" ⟶ `` "B" ⟶ `` "A")
+  K-ty : ⊢ K ∶ (`` "A" ⟶ `` "B" ⟶ `` "A")
   K-ty = ⊢ƛ (⊢ƛ (⊢` there (here refl)))
 
-  S-ty : [] ⊢ S ∶ ((`` "A" ⟶ `` "B" ⟶ `` "C") ⟶ (`` "A" ⟶ `` "B") ⟶ `` "A" ⟶ `` "C")
+  S-ty : ⊢ S ∶ ((`` "A" ⟶ `` "B" ⟶ `` "C") ⟶ (`` "A" ⟶ `` "B") ⟶ `` "A" ⟶ `` "C")
   S-ty = ⊢ƛ (⊢ƛ (⊢ƛ (⊢ ⊢ ⊢` there (there (here refl)) ⟶ (⊢` here refl) ⟶ (⊢ ⊢` there (here refl) ⟶ (⊢` (here refl))))))
