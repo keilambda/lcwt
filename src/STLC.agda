@@ -1,13 +1,13 @@
 module STLC where
 
-open import Data.Bool using (_∨_; _∧_; if_then_else_)
+open import Data.Bool using (Bool; true; false; _∨_; _∧_; if_then_else_)
 open import Data.List using (List; []; [_]; _++_; filter)
 open import Data.String using (String; _≟_; _==_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Level using (zero)
 open import Relation.Nullary using (¬?; ⌊_⌋)
 open import Relation.Binary.Core using (Rel)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂)
+open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; cong₂)
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _◅_; _▻_)
 
 open import Data.List.Membership.DecPropositional _≟_ using (_∈?_; _∉?_)
@@ -156,6 +156,7 @@ module Combinators where
   Ω = (ƛ "x" ⇒ ` "x" · ` "x") · (ƛ "x" ⇒ ` "x" · ` "x")
   Y = ƛ "f" ⇒ (ƛ "x" ⇒ ` "f" · (` "x" · ` "x")) · (ƛ "x" ⇒ ` "f" · (` "x" · ` "x"))
 
+-- 1.1.11: Type atom and simple types
 𝔸 : Set
 𝔸 = String
 
@@ -176,3 +177,11 @@ private
 
 ⟶-inj : A ⟶ B ≡ C ⟶ D → A ≡ C × B ≡ D
 ⟶-inj refl = refl , refl
+
+``≢⟶ : `` α ≢ A ⟶ B
+``≢⟶ ()
+
+_𝕋==_ : 𝕋 → 𝕋 → Bool
+(`` x) 𝕋== (`` y)   = x == y
+(x ⟶ y) 𝕋== (p ⟶ q) = x 𝕋== p ∧ y 𝕋== q
+_ 𝕋== _             = false
