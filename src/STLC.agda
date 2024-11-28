@@ -155,3 +155,24 @@ module Combinators where
 
   Ω = (ƛ "x" ⇒ ` "x" · ` "x") · (ƛ "x" ⇒ ` "x" · ` "x")
   Y = ƛ "f" ⇒ (ƛ "x" ⇒ ` "f" · (` "x" · ` "x")) · (ƛ "x" ⇒ ` "f" · (` "x" · ` "x"))
+
+𝔸 : Set
+𝔸 = String
+
+data 𝕋 : Set where
+  ``_  : 𝔸 → 𝕋
+  _⟶_ : 𝕋 → 𝕋 → 𝕋
+
+infix  9 ``_
+infixr 5 _⟶_
+
+private
+  variable
+    α β γ σ τ ρ : 𝔸
+    A B C D : 𝕋
+
+``-inj : `` α ≡ `` β → α ≡ β
+``-inj refl = refl
+
+⟶-inj : A ⟶ B ≡ C ⟶ D → A ≡ C × B ≡ D
+⟶-inj refl = refl , refl
